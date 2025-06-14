@@ -1,0 +1,187 @@
+#include<mlfw_vector.h>
+#include<mlfw_operations.h>
+#include<mlfw_matrix.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+
+typedef struct mlfw_mat_double 
+{
+double **data;
+dimension_t rows;
+dimension_t columns;
+} mlfw_mat_double;
+
+mlfw_mat_double * mlfw_mat_double_create_new(dimension_t rows, dimension_t columns)
+{
+mlfw_mat_double * matrix=(mlfw_mat_double *)malloc(sizeof(mlfw_mat_double));
+if(matrix==NULL) return NULL;
+matrix->rows=rows;
+matrix->columns=columns;
+matrix->data=(double **)malloc(sizeof(double *)*rows);
+if(matrix->data==NULL)
+{
+free(matrix);
+return NULL;
+}       
+for(index_t i=0;i<rows;i++)
+{
+matrix->data[i]=(double *)malloc(sizeof(double)*columns);
+if(matrix->data[i]==NULL)
+{
+for(index_t k=0;k<i;k++) free(matrix->data[k]);
+free(matrix->data);
+free(matrix);
+return NULL;
+}
+}
+return matrix;
+}
+
+void mlfw_mat_double_destroy(mlfw_mat_double *matrix)
+{
+if(matrix==NULL) return;
+for(index_t i=0;i<matrix->rows;i++) free(matrix->data[i]);
+free(matrix->data);
+free(matrix);
+}
+
+mlfw_mat_double * mlfw_mat_double_from_csv(const char * csv_file_name)
+{
+char m;
+int r,c;
+double value;
+char double_string[1025];
+int index;
+FILE *file;
+dimension_t rows,columns;
+mlfw_mat_double *matrix;
+if(csv_file_name==NULL)
+{
+printf("invalid file name\n");
+return NULL;
+}
+file=fopen(csv_file_name,"r");
+if(file==NULL)
+{
+printf("unable to open file %s",csv_file_name);
+return 0;
+}
+rows=columns=0;
+while(1)
+{
+m=fgetc(file);
+if(feof(file)) break;
+if(rows==0)
+{
+if(m==',') columns++;
+}
+if(m=='\n') rows++;
+}
+columns++;
+matrix=mlfw_mat_double_create_new(rows,columns);
+rewind(file);
+
+r=0;
+c=0;
+index=0;
+while(1)
+{
+m=fgetc(file);
+if(feof(file)) break;
+if(m==',' || m=='\n')
+{
+double_string[index]='\0';
+index=0;
+value=strtod(double_string,NULL);
+matrix->data[r][c]=value;
+c++;
+if(c==matrix->columns) 
+{
+r++;
+c=0;
+}
+}
+else
+{
+double_string[index]=m;
+index++;
+}
+}
+fclose(file);
+return matrix;
+}
+
+double mlfw_mat_double_get(mlfw_mat_double *matrix, index_t row, index_t col)
+{
+double value=0.0;
+if(matrix==NULL) return value;
+if(row<0 || row>=matrix->rows) return value;
+if(col<0 || col>=matrix->columns) return value;
+return matrix->data[row][col];
+}
+
+void mlfw_mat_double_set(mlfw_mat_double *matrix, index_t row, index_t col, double value)
+{
+if(matrix==NULL) return;
+if(row<0 || row>=matrix->rows) return;
+if(col<0 || col>=matrix->columns) return;
+matrix->data[row][col]=value;
+}
+
+void mlfw_mat_double_get_dimensions(mlfw_mat_double *matrix, dimension_t *rows, dimension_t *columns)
+{
+	if(matrix==NULL) return;
+	if(rows!=NULL) *rows=matrix->rows;
+	if(columns!=NULL) *columns=matrix->columns;
+}
+
+void mlfw_mat_double_copy(mlfw_mat_double *target, mlfw_mat_double *source, index_t target_row_index, index_t target_column_index, index_t source_from_row_index, index_t source_from_column_index, index_t source_to_row_index, index_t source_to_column_index)
+{
+	int r,c;
+	int target_r, target_c;
+
+	if(target==NULL || source==NULL) return;
+	
+	if(target_row_index<0 || target_row_index>=target->rows) return;
+	if(target_column_index<0 || target_column_index>=target->columns) return;
+	
+	if(source_from_row_index<0 || source_from_row_index>=source->rows) return;
+	if(source_from_column_index<0 || source_from_column_index>=source->columns) return;
+
+	if(source_to_row_index<0 || source_to_row_index>=source->rows) return;
+	if(source_to_column_index<0 || source_to_column_index>=source->columns) return;
+
+	target_r=target_row_index;
+
+	r=source_from_row_index;
+	while(r<=source_to_row_index)
+	{
+		target_c=target_column_index;
+		c=source_from_column_index;
+		while(c<=source_to_column_index)
+		{
+			if(target_r<target->rows && target_c<target->columns) mlfw_mat_double_set(target, target_r, target_c, source->data[r][c]);		
+			target_c++;
+			c++;
+		}
+		target_r++;
+		r++;
+	}
+	
+}
+
+mlfw_column_vec_double * mlfw_mat_double_create_column_vec(mlfw_mat_double *matrix, index_t column_index)
+{
+	mlfw_column_vec_double *vector;
+	if(matrix==NULL) return NULL;
+	if(column_index<0 || column_index>=matrix->columns) return NULL;
+	vector=mlfw_column_vec_double_create_new(matrix->rows);
+	if(vector==NULL) return NULL;
+	for(int i=0;i<matrix->rows;i++)
+	{
+		mlfw_column_vec_double_set(vector, i, matrix->data[i][column_index]);
+	}
+	return vector;
+}
+
