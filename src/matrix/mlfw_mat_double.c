@@ -278,4 +278,26 @@ void mlfw_mat_double_to_csv(mlfw_mat_double *matrix, char *csv_file_name)
 	fclose(file);
 }
 
-
+mlfw_mat_double * mlfw_mat_double_transpose(mlfw_mat_double *matrix)
+{
+	mlfw_mat_double *transposed_matrix;
+	index_t row, col;
+	if(matrix==NULL)
+	{
+		printf("unable to create transpose of the matrix\n");
+		return NULL;
+	}
+	transposed_matrix = mlfw_mat_double_create_new(matrix->columns, matrix->rows);
+	if(transposed_matrix == NULL) {
+		printf("unable to create transpose of the matrix\n");
+		return NULL;
+	}
+	for(row=0;row<matrix->rows;row++)
+	{
+		for(col=0;col<matrix->columns;col++)
+		{
+			transposed_matrix->data[col][row]=matrix->data[row][col];
+		}
+	}
+	return transposed_matrix;
+}

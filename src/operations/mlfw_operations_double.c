@@ -69,3 +69,26 @@ mlfw_column_vec_double * mlfw_subtract_double_column_vector(mlfw_column_vec_doub
 	return column_vector;
 }
 
+mlfw_column_vec_double * mlfw_multiply_double_scalar_with_column_vector(double scalar_value, mlfw_column_vec_double *vector)
+{
+	mlfw_column_vec_double *product_vector;
+	dimension_t vector_size;
+	index_t i;
+	double val;
+	if(vector==NULL) return NULL;
+	vector_size=mlfw_column_vec_double_get_size(vector);
+	product_vector=mlfw_column_vec_double_create_new(vector_size);
+	if(product_vector==NULL) 
+	{
+		printf("Insufficient memory\n");
+		return NULL;
+	}
+	for(i=0;i<vector_size;i++)
+	{
+		val=mlfw_column_vec_double_get(vector,i);
+		mlfw_column_vec_double_set(product_vector,i, val*scalar_value);
+	}
+	return product_vector;
+}
+
+

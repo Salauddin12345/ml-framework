@@ -25,5 +25,7 @@ mlfw_column_vec_double * mlfw_mat_double_create_column_vec(mlfw_mat_double *matr
 mlfw_mat_double * mlfw_mat_double_shuffle(mlfw_mat_double *matrix, uint8_t shuffle_count);
 void mlfw_mat_double_to_csv(mlfw_mat_double *matrix, char *csv_file_name);
 
+mlfw_mat_double * mlfw_mat_double_transpose(mlfw_mat_double *matrix);
+
 #endif
 
