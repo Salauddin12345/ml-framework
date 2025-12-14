@@ -39,6 +39,41 @@ return NULL;
 return matrix;
 }
 
+mlfw_mat_double * mlfw_mat_double_create_new_filled(dimension_t rows, dimension_t columns, double value)
+{
+mlfw_mat_double * matrix=(mlfw_mat_double *)malloc(sizeof(mlfw_mat_double));
+if(matrix==NULL) return NULL;
+matrix->rows=rows;
+matrix->columns=columns;
+matrix->data=(double **)malloc(sizeof(double *)*rows);
+if(matrix->data==NULL)
+{
+free(matrix);
+return NULL;
+}       
+for(index_t i=0;i<rows;i++)
+{
+matrix->data[i]=(double *)malloc(sizeof(double)*columns);
+if(matrix->data[i]==NULL)
+{
+for(index_t k=0;k<i;k++) free(matrix->data[k]);
+free(matrix->data);
+free(matrix);
+return NULL;
+}
+}
+// filling
+for(index_t i=0;i<rows;i++)
+{
+	for(index_t j=0;j<columns;j++)
+	{
+		matrix->data[i][j]=value;
+	}
+}
+return matrix;
+}
+
+
 void mlfw_mat_double_destroy(mlfw_mat_double *matrix)
 {
 if(matrix==NULL) return;
