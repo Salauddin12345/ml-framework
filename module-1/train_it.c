@@ -15,6 +15,9 @@ uint8_t STOP_FLAG=0;
 
 void train_it()
 {
+
+FILE *graph_file;
+
 uint64_t k; // for looping
 
 mlfw_mat_double *dataset;
@@ -119,6 +122,8 @@ if(history==NULL)
 
 }
 
+graph_file=fopen("graph.csv", "w");
+
 history_index=0;
 // Operation start
 k=1;
@@ -191,6 +196,8 @@ sum_of_squared_error_values=mlfw_column_vec_double_get(ETE,0);
 final_error_value=sum_of_squared_error_values/(2*I_rows);
 
 printf("Iteration Number %" PRIu64 ", Error : %41.15lf\n", k, final_error_value);
+
+fprintf(graph_file, "%" PRIu64 ", %lf\n", k, final_error_value);
 
 iteration_number=(double)(k);
 
@@ -284,6 +291,8 @@ mlfw_column_vec_double_destroy(TMP);
 
 k++;
 } // loops ends here
+
+fclose(graph_file);
 
 // code to store the content of (m vector) to csv file.
 
