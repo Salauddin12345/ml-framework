@@ -76,7 +76,7 @@ for(i=0;i<dataset_rows;i++)
 {
 	for(j=0;j<dataset_columns;j++)
 	{
-		fprintf(results_file, "%lf  ", mlfw_mat_double_get(dataset, i, j));
+		fprintf(results_file, "%lf,", mlfw_mat_double_get(dataset, i, j));
 	}
 	fprintf(results_file,"%lf\n", mlfw_column_vec_double_get(P, i));
 }

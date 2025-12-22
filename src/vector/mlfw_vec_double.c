@@ -89,6 +89,24 @@ mlfw_row_vec_double * mlfw_column_vec_double_transpose(const mlfw_column_vec_dou
 	return transposed_vector;
 }
 
+double mlfw_column_vec_double_get_mean(mlfw_column_vec_double *vector)
+{
+	double mean,sum;
+	sum=0.0;
+	if(vector==NULL)
+	{
+		printf("unable to perform operation\n");
+		return 0.0;
+	}
+	for(index_t i=0;i<vector->size;i++)
+	{
+		sum+=vector->data[i];
+	}
+	mean=sum/vector->size;
+	return mean;
+}
+
+
 // row vector
 mlfw_row_vec_double * mlfw_row_vec_double_create_new(dimension_t size)
 {
@@ -164,4 +182,23 @@ mlfw_column_vec_double * mlfw_row_vec_double_transpose(const mlfw_row_vec_double
 	}
 	return transposed_vector;
 }
+
+double mlfw_row_vec_double_get_mean(mlfw_row_vec_double *vector)
+{
+	double mean,sum;
+	sum=0.0;
+	if(vector==NULL)
+	{
+		printf("unable to perform operation\n");
+		return 0.0;
+	}
+
+	for(index_t i=0;i<vector->size;i++)
+	{
+		sum+=vector->data[i];
+	}
+	mean=sum/vector->size;
+	return mean;
+}
+
 

@@ -22,6 +22,8 @@ dimension_t mlfw_column_vec_double_get_size(mlfw_column_vec_double *vector);
 
 mlfw_row_vec_double * mlfw_column_vec_double_transpose(const mlfw_column_vec_double *vector);
 
+double mlfw_column_vec_double_get_mean(mlfw_column_vec_double *vector);
+
 // row vector
 mlfw_row_vec_double * mlfw_row_vec_double_create_new(dimension_t size);
 
@@ -36,5 +38,7 @@ void mlfw_row_vec_double_set(mlfw_row_vec_double *vector, index_t index, double 
 dimension_t mlfw_row_vec_double_get_size(mlfw_row_vec_double *vector);
 
 mlfw_column_vec_double * mlfw_row_vec_double_transpose(const mlfw_row_vec_double *vector);
+
+double mlfw_row_vec_double_get_mean(mlfw_row_vec_double *vector);
 
 #endif
